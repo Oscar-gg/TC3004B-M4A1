@@ -3,7 +3,7 @@ import { Button } from "../components/Button";
 import { useState } from "react";
 import { List } from "../components/List";
 
-export const TasksPage = () => {
+export const TasksPage = ({ isLoggedIn }) => {
   const [taskTest, setTaskText] = useState("");
 
   const [items, setItems] = useState([
@@ -14,6 +14,7 @@ export const TasksPage = () => {
   const handleDelete = (id) => {
     setItems(items.filter((item) => item.id !== id));
   };
+
   return (
     <div className="App">
       <div className="bg-zinc-400 py-5">

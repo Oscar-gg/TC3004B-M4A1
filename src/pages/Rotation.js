@@ -7,6 +7,7 @@ import { useState } from "react";
 export const RotationPage = () => {
   const [direction, setDirection] = useState("right");
   const complementaryDirection = direction === "right" ? "left" : "right";
+
   const handleClick = () => {
     setDirection(complementaryDirection);
   };
