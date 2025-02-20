@@ -1,17 +1,10 @@
 import "../App.css";
 import { Button } from "../components/Button";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 
-export const Login = ({ login, isLoggedIn, setIsLoggedIn }) => {
+export const Login = ({ login, setIsLoggedIn }) => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const navigate = useNavigate();
-
-  if (isLoggedIn) {
-    navigate("/todo");
-    return;
-  }
 
   const onsumbit = (e) => {
     e.preventDefault();
