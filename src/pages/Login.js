@@ -6,14 +6,14 @@ export const Login = ({ login, setIsLoggedIn }) => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
-  const onsumbit = (e) => {
+  const onsumbit = async (e) => {
     e.preventDefault();
     if (!username || !password) {
       alert("Los campos no deben estar vacios");
       return;
     }
 
-    const isLogin = login({ username, password });
+    const isLogin = await login({ username, password });
     if (isLogin) {
       setIsLoggedIn(true);
       return;

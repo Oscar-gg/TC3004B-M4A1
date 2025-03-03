@@ -18,16 +18,26 @@ const navigation = {
   "Rotate!": "/rotate",
 };
 
+const loginRoute = "http://localhost:5000/login";
+
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
-  const login = (user) => {
-    let isLogin = false;
+  const login = async (user) => {
+    const isLogin = await fetch(loginRoute, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(user),
+    });
 
-    if (user.username === "oscar" && user.password === "123") {
-      isLogin = true;
+    const data = await isLogin.json();
+    if (data.status === 200) {
+      return true;
     }
-    return isLogin;
+
+    return data;
   };
 
   return (

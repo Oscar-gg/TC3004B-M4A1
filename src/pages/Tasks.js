@@ -1,6 +1,6 @@
 import "../App.css";
 import { Button } from "../components/Button";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { List } from "../components/List";
 
 export const TasksPage = ({ isLoggedIn }) => {
@@ -11,8 +11,46 @@ export const TasksPage = ({ isLoggedIn }) => {
     { name: "Tarea 2", id: 2 },
     { name: "Tarea 3", id: 3 },
   ]);
-  const handleDelete = (id) => {
-    setItems(items.filter((item) => item.id !== id));
+
+  useEffect(() => {
+    if (isLoggedIn) {
+      getItems();
+    }
+  }, [isLoggedIn]);
+
+  const getItems = async () => {
+    const res = await fetch("http://localhost:5000/items/get");
+    const data = await res.json();
+
+    const formatted_items = data.map((item) => {
+      return { name: item.name, id: item.id };
+    });
+    setItems(formatted_items);
+  };
+
+  const handleDelete = async (id) => {
+    await fetch(`http://localhost:5000/items/delete`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ id: id }),
+    });
+
+    await getItems();
+    // setItems(items.filter((item) => item.id !== id));
+  };
+  const handleCreate = async (name) => {
+    await fetch(`http://localhost:5000/items/create`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ name: name, price: 0 }),
+    });
+
+    await getItems();
+    // setItems(items.filter((item) => item.id !== id));
   };
 
   return (
@@ -26,7 +64,8 @@ export const TasksPage = ({ isLoggedIn }) => {
             text={"Agregar tarea"}
             onClick={() => {
               setTaskText("");
-              setItems([...items, { name: taskTest, id: crypto.randomUUID() }]);
+              handleCreate(taskTest);
+              // setItems([...items, { name: taskTest, id: crypto.randomUUID() }]);
             }}
           />
           <input
