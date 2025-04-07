@@ -22,6 +22,7 @@ const loginRoute = "http://localhost:5000/login";
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [token, setToken] = useState("");
 
   const login = async (user) => {
     const isLogin = await fetch(loginRoute, {
@@ -33,11 +34,13 @@ function App() {
     });
 
     const data = await isLogin.json();
-    if (data.status === 200) {
+
+    if (data.isLogin) {
+      setToken(data.token);
       return true;
     }
 
-    return data;
+    return false;
   };
 
   return (
@@ -68,7 +71,10 @@ function App() {
         <Route
           element={<AuthMiddleware condition={isLoggedIn} redirectTo="/" />}
         >
-          <Route path="/todo" element={<TasksPage isLoggedIn={isLoggedIn} />} />
+          <Route
+            path="/todo"
+            element={<TasksPage isLoggedIn={isLoggedIn} token={token} />}
+          />
           <Route
             path="/rotate"
             element={<RotationPage isLoggedIn={isLoggedIn} />}

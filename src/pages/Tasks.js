@@ -3,7 +3,7 @@ import { Button } from "../components/Button";
 import { useEffect, useState } from "react";
 import { List } from "../components/List";
 
-export const TasksPage = ({ isLoggedIn }) => {
+export const TasksPage = ({ isLoggedIn, token }) => {
   const [taskTest, setTaskText] = useState("");
 
   const [items, setItems] = useState([
@@ -19,7 +19,13 @@ export const TasksPage = ({ isLoggedIn }) => {
   }, [isLoggedIn]);
 
   const getItems = async () => {
-    const res = await fetch("http://localhost:5000/items/get");
+    console.log("Token", token);
+    const res = await fetch("http://localhost:5000/items/get", {
+      method: "GET",
+      headers: {
+        Authorization: token,
+      },
+    });
     const data = await res.json();
 
     const formatted_items = data.map((item) => {
@@ -29,12 +35,11 @@ export const TasksPage = ({ isLoggedIn }) => {
   };
 
   const handleDelete = async (id) => {
-    await fetch(`http://localhost:5000/items/delete`, {
+    const res = await fetch(`http://localhost:5000/items/delete/${id}`, {
       method: "DELETE",
       headers: {
-        "Content-Type": "application/json",
+        Authorization: token,
       },
-      body: JSON.stringify({ id: id }),
     });
 
     await getItems();
@@ -44,6 +49,7 @@ export const TasksPage = ({ isLoggedIn }) => {
     await fetch(`http://localhost:5000/items/create`, {
       method: "POST",
       headers: {
+        Authorization: token,
         "Content-Type": "application/json",
       },
       body: JSON.stringify({ name: name, price: 0 }),
