@@ -20,7 +20,7 @@ export const TasksPage = ({ isLoggedIn, token }) => {
 
   const getItems = async () => {
     console.log("Token", token);
-    const res = await fetch("http://localhost:5000/items/get", {
+    const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/items/get`, {
       method: "GET",
       headers: {
         Authorization: token,
@@ -35,18 +35,22 @@ export const TasksPage = ({ isLoggedIn, token }) => {
   };
 
   const handleDelete = async (id) => {
-    const res = await fetch(`http://localhost:5000/items/delete/${id}`, {
-      method: "DELETE",
-      headers: {
-        Authorization: token,
-      },
-    });
+    const res = await fetch(
+      `${process.env.REACT_APP_BACKEND_URL}/items/delete/${id}`,
+      {
+        method: "DELETE",
+        headers: {
+          Authorization: token,
+        },
+      }
+    );
 
     await getItems();
     // setItems(items.filter((item) => item.id !== id));
   };
+
   const handleCreate = async (name) => {
-    await fetch(`http://localhost:5000/items/create`, {
+    await fetch(`${process.env.REACT_APP_BACKEND_URL}/items/create`, {
       method: "POST",
       headers: {
         Authorization: token,

@@ -18,7 +18,7 @@ const navigation = {
   "Rotate!": "/rotate",
 };
 
-const loginRoute = "http://localhost:5000/login";
+const loginRoute = `${process.env.REACT_APP_BACKEND_URL}/login`;
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
