@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+
 export const Item = ({ name, id, ondelete }) => {
   return (
     <div className="p-2 rounded-md  h-14 flex items-center justify-center gap-x-3">
@@ -7,7 +9,9 @@ export const Item = ({ name, id, ondelete }) => {
       >
         Borrar
       </button>
-      <p className="text-lg text-white">{name}</p>
+      <Link to={"/todo/" + id}>
+        <p className="text-lg text-white">{name}</p>
+      </Link>
     </div>
   );
 };

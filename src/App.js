@@ -1,7 +1,7 @@
 import "./App.css";
 // import { Header } from "./components/Header";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import { TasksPage } from "./pages/Tasks";
+import { TasksPage, TaskInfo } from "./pages/Tasks";
 import { RotationPage } from "./pages/Rotation";
 import { Footer } from "./components/Footer";
 import ResponsiveAppBar from "./components/Navbar";
@@ -78,6 +78,10 @@ function App() {
           <Route
             path="/rotate"
             element={<RotationPage isLoggedIn={isLoggedIn} />}
+          />
+          <Route
+            path="/todo/:id"
+            element={<TaskInfo isLoggedIn={isLoggedIn} token={token} />}
           />
         </Route>
       </Routes>
