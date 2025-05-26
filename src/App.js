@@ -9,6 +9,8 @@ import { Login } from "./pages/Login";
 // import Signin from "./components/Signin";
 import { AuthMiddleware } from "./components/AuthMiddleware";
 import { useState } from "react";
+import LifeCycle from "./components/Lifecycle";
+import useAuth from "./hooks/useAuth";
 
 const pages = ["Login", "Todo", "Rotate!"];
 
@@ -18,75 +20,65 @@ const navigation = {
   "Rotate!": "/rotate",
 };
 
-const loginRoute = `${process.env.REACT_APP_BACKEND_URL}/login`;
-
 function App() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [token, setToken] = useState("");
-
-  const login = async (user) => {
-    const isLogin = await fetch(loginRoute, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(user),
-    });
-
-    const data = await isLogin.json();
-
-    if (data.isLogin) {
-      setToken(data.token);
-      return true;
-    }
-
-    return false;
-  };
+  const [show, setShow] = useState(false);
+  const { isLoggedIn, login, token, setIsLoggedIn } = useAuth();
 
   return (
-    <BrowserRouter>
-      {/* <Signin /> */}
-      <ResponsiveAppBar
-        navigation={navigation}
-        pages={pages}
-        setIsLoggedIn={setIsLoggedIn}
-      />
-      <Routes>
-        <Route
-          element={
-            <AuthMiddleware condition={!isLoggedIn} redirectTo="/todo" />
-          }
-        >
+    <>
+      <BrowserRouter>
+        {/* <Signin /> */}
+        <ResponsiveAppBar
+          navigation={navigation}
+          pages={pages}
+          setIsLoggedIn={setIsLoggedIn}
+        />
+        <Routes>
           <Route
-            path="/"
             element={
-              <Login
-                login={login}
-                setIsLoggedIn={setIsLoggedIn}
-                isLoggedIn={isLoggedIn}
-              />
+              <AuthMiddleware condition={!isLoggedIn} redirectTo="/todo" />
             }
-          />
-        </Route>
-        <Route
-          element={<AuthMiddleware condition={isLoggedIn} redirectTo="/" />}
-        >
+          >
+            <Route
+              path="/"
+              element={
+                <Login
+                  login={login}
+                  setIsLoggedIn={setIsLoggedIn}
+                  isLoggedIn={isLoggedIn}
+                />
+              }
+            />
+          </Route>
           <Route
-            path="/todo"
-            element={<TasksPage isLoggedIn={isLoggedIn} token={token} />}
-          />
-          <Route
-            path="/rotate"
-            element={<RotationPage isLoggedIn={isLoggedIn} />}
-          />
-          <Route
-            path="/todo/:id"
-            element={<TaskInfo isLoggedIn={isLoggedIn} token={token} />}
-          />
-        </Route>
-      </Routes>
-      <Footer />
-    </BrowserRouter>
+            element={<AuthMiddleware condition={isLoggedIn} redirectTo="/" />}
+          >
+            <Route
+              path="/todo"
+              element={<TasksPage isLoggedIn={isLoggedIn} token={token} />}
+            />
+            <Route
+              path="/rotate"
+              element={<RotationPage isLoggedIn={isLoggedIn} />}
+            />
+            <Route
+              path="/todo/:id"
+              element={<TaskInfo isLoggedIn={isLoggedIn} token={token} />}
+            />
+          </Route>
+        </Routes>
+        <Footer />
+      </BrowserRouter>
+
+      <button
+        onClick={() => {
+          setShow(!show);
+        }}
+      >
+        {show ? "Hide LifeCycle" : "Show LifeCycle"}
+      </button>
+      {show && <LifeCycle />}
+    </>
   );
 }
 
