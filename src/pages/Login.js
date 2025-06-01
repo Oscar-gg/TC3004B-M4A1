@@ -2,7 +2,7 @@ import "../App.css";
 import { Button } from "../components/Button";
 import { useState } from "react";
 
-export const Login = ({ login, setIsLoggedIn }) => {
+export const Login = ({ login }) => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
@@ -14,12 +14,10 @@ export const Login = ({ login, setIsLoggedIn }) => {
     }
 
     const isLogin = await login({ username, password });
-    if (isLogin) {
-      setIsLoggedIn(true);
-      return;
+    if (!isLogin) {
+      alert("Usuario o contraseña incorrecta");
     }
 
-    alert("Usuario o contraseña incorrecta");
     return;
   };
 

@@ -16,7 +16,7 @@ import { useNavigate } from "react-router-dom";
 
 const settings = ["Logout"];
 
-const ResponsiveAppBar = ({ pages, navigation, setIsLoggedIn }) => {
+const ResponsiveAppBar = ({ pages, navigation, logout }) => {
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
   const navigate = useNavigate();
@@ -35,7 +35,7 @@ const ResponsiveAppBar = ({ pages, navigation, setIsLoggedIn }) => {
   const handleCloseUserMenu = (e) => {
     setAnchorElUser(null);
     if (e.target.textContent === settings[0]) {
-      setIsLoggedIn(false);
+      logout();
     }
   };
 

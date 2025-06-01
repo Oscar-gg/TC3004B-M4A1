@@ -21,7 +21,7 @@ const LifeCycle = () => {
 
     return (
         <div>
-            <input className="m-3 bg-blue-300" type='text' value={text} onChange={
+            <input className="m-3 bg-blue-500 rounded-md text-white p-2" type='text' placeholder='Ingresa un texto' value={text} onChange={
                 (e) => setText(e.target.value)
             }/>
         </div>

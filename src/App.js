@@ -22,7 +22,7 @@ const navigation = {
 
 function App() {
   const [show, setShow] = useState(false);
-  const { isLoggedIn, login, token, setIsLoggedIn } = useAuth();
+  const { isLoggedIn, login, token, logout } = useAuth();
 
   return (
     <>
@@ -31,7 +31,7 @@ function App() {
         <ResponsiveAppBar
           navigation={navigation}
           pages={pages}
-          setIsLoggedIn={setIsLoggedIn}
+          logout={logout}
         />
         <Routes>
           <Route
@@ -41,13 +41,7 @@ function App() {
           >
             <Route
               path="/"
-              element={
-                <Login
-                  login={login}
-                  setIsLoggedIn={setIsLoggedIn}
-                  isLoggedIn={isLoggedIn}
-                />
-              }
+              element={<Login login={login} isLoggedIn={isLoggedIn} />}
             />
           </Route>
           <Route
@@ -74,8 +68,11 @@ function App() {
         onClick={() => {
           setShow(!show);
         }}
+        className="bg-blue-500 text-white p-2 rounded-md m-3"
       >
-        {show ? "Hide LifeCycle" : "Show LifeCycle"}
+        {show
+          ? "Ocultar componente con ciclo de vida"
+          : "Mostrar componente con ciclo de vida"}
       </button>
       {show && <LifeCycle />}
     </>

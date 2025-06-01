@@ -3,66 +3,17 @@ import { Button } from "../components/Button";
 import { useEffect, useState } from "react";
 import { List } from "../components/List";
 import { useNavigate, useParams } from "react-router-dom";
+import useItems from "../hooks/useItems";
 
-export const TasksPage = ({ isLoggedIn, token }) => {
+export const TasksPage = ({ token, isLoggedIn }) => {
   const [taskTest, setTaskText] = useState("");
 
-  const [items, setItems] = useState([
-    { name: "Tarea 1", id: 1 },
-    { name: "Tarea 2", id: 2 },
-    { name: "Tarea 3", id: 3 },
-  ]);
-
+  const { items, getItems, createItem, deleteItem } = useItems({ token });
   useEffect(() => {
     if (isLoggedIn) {
       getItems();
     }
-  }, [isLoggedIn]);
-
-  const getItems = async () => {
-    console.log("Token", token);
-    const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/items/get`, {
-      method: "GET",
-      headers: {
-        Authorization: token,
-      },
-    });
-    const data = await res.json();
-
-    const formatted_items = data.map((item) => {
-      return { name: item.name, id: item.id };
-    });
-    setItems(formatted_items);
-  };
-
-  const handleDelete = async (id) => {
-    const res = await fetch(
-      `${process.env.REACT_APP_BACKEND_URL}/items/delete/${id}`,
-      {
-        method: "DELETE",
-        headers: {
-          Authorization: token,
-        },
-      }
-    );
-
-    await getItems();
-    // setItems(items.filter((item) => item.id !== id));
-  };
-
-  const handleCreate = async (name) => {
-    await fetch(`${process.env.REACT_APP_BACKEND_URL}/items/create`, {
-      method: "POST",
-      headers: {
-        Authorization: token,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ name: name, price: 0 }),
-    });
-
-    await getItems();
-    // setItems(items.filter((item) => item.id !== id));
-  };
+  }, [isLoggedIn, getItems]);
 
   return (
     <div className="App">
@@ -70,13 +21,15 @@ export const TasksPage = ({ isLoggedIn, token }) => {
         <h2 className="text-white text-4xl my-3 font-bold">
           Agrega tus tareas!
         </h2>
+        <h3 className="text-white text-2xl mt-3 mb-12 font-bold">
+          Haz clic en el nombre de la tarea para inspeccionarla
+        </h3>
         <div className="flex flex-row items-center justify-center gap-x-3">
           <Button
             text={"Agregar tarea"}
             onClick={() => {
               setTaskText("");
-              handleCreate(taskTest);
-              // setItems([...items, { name: taskTest, id: crypto.randomUUID() }]);
+              createItem(taskTest);
             }}
           />
           <input
@@ -89,7 +42,7 @@ export const TasksPage = ({ isLoggedIn, token }) => {
           />
         </div>
 
-        <List items={items} ondelete={handleDelete} />
+        <List items={items} ondelete={deleteItem} />
       </div>
     </div>
   );
@@ -97,32 +50,15 @@ export const TasksPage = ({ isLoggedIn, token }) => {
 
 export const TaskInfo = ({ isLoggedIn, token }) => {
   const { id } = useParams();
+  const { item, getItem } = useItems({ token });
 
-  const [item, setItem] = useState(null);
   const navigate = useNavigate();
-
-  const getItem = async () => {
-    console.log("Token", token);
-    const res = await fetch(
-      `${process.env.REACT_APP_BACKEND_URL}/items/get/${id}`,
-      {
-        method: "GET",
-        headers: {
-          Authorization: token,
-        },
-      }
-    );
-    const data = await res.json();
-
-    console.log("Data", data);
-    setItem(data);
-  };
 
   useEffect(() => {
     if (isLoggedIn) {
-      getItem();
+      getItem(id);
     }
-  }, [isLoggedIn]);
+  }, [isLoggedIn, id, getItem]);
 
   return (
     <div className="App">
@@ -147,6 +83,9 @@ export const TaskInfo = ({ isLoggedIn, token }) => {
                 Nombre del producto: {item.name}
               </h2>
               <p className="text-white text-xl my-3 font-bold">Id: {item.id}</p>
+              <p className="text-white text-xl my-3 font-bold">
+                Precio: {item?.price ?? "Sin precio"}
+              </p>
             </>
           ) : (
             <h2 className="text-white text-4xl my-3 font-bold">

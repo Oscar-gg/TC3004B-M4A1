@@ -19,6 +19,7 @@ const useAuth = () => {
 
         if (data.isLogin) {
           setToken(data.token);
+          setIsLoggedIn(true);
           return true;
         }
 
@@ -35,7 +36,6 @@ const useAuth = () => {
     isLoggedIn,
     login,
     logout,
-    setIsLoggedIn
   };
 }
 
